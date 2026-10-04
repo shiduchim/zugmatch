@@ -136,7 +136,7 @@ export function contactsCardHtml(rows) {
   return `<div class="card"><div class="sectionTitle" style="margin-top:0">Contacts</div>${rows
     .map(
       (r, i) => `<div class="contactCardRow" data-row="${i}"><div class="small"><b>${esc(r.kind)}:</b> ${esc(r.name || 'Not added')}</div>
-      ${r.phone ? `<div class="small" style="color:var(--accent);font-weight:800">${esc(r.phone)}</div><div class="actions" style="margin-top:6px"><button type="button" class="lightblue" data-act="call">Call</button><button type="button" class="lightblue" data-act="sms">SMS</button><button type="button" class="lightblue" data-act="wa">WhatsApp</button></div>` : `<div class="small" style="font-style:italic">No phone number</div>`}
+      ${r.phone ? `<div class="small" style="color:var(--accent);font-weight:800">${esc(r.phone)}</div><div class="actions" style="margin-top:6px"><button type="button" class="lightblue" data-act="call">Call</button><button type="button" class="lightblue" data-act="wa">WhatsApp</button><button type="button" class="lightblue" data-act="sms">SMS</button></div>` : `<div class="small" style="font-style:italic">No phone number</div>`}
       </div>`
     )
     .join('')}</div>`;

@@ -77,6 +77,17 @@ test('peermatch reference screenshots', async ({ browser }) => {
   await page.evaluate(() => { [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Backup')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
   await page.waitForTimeout(800);
   await page.screenshot({ path: `${OUT}/backup-0.png` });
+  await page.evaluate(() => { [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Close')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await page.waitForTimeout(500);
+
+  /* 5. Make Match sheet: select one Guy and one Girl, then open Make match. */
+  await page.click('#tabGuys'); await page.waitForTimeout(400);
+  await page.locator('.pmListCheck:visible').first().click(); await page.waitForTimeout(200);
+  await page.click('#tabGirls'); await page.waitForTimeout(400);
+  await page.locator('.pmListCheck:visible').first().click(); await page.waitForTimeout(200);
+  await page.evaluate(() => { [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Make match')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await page.waitForTimeout(800);
+  await scrollShots('match', 3);
 
   await ctx.close();
 });

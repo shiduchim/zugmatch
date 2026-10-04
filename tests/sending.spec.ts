@@ -64,6 +64,16 @@ test('Contacts card WhatsApp button opens directly with no text (approved fix #5
   expect(urls[0]).toContain('972500000101');
 });
 
+test('Contacts card buttons are in the owner\'s order: Call, WhatsApp, SMS (approved fix #6)', async ({ page }) => {
+  await seed(page, {
+    guys: [{ id: 1, name: 'Moshe Example', age: '31', text: 'x', contact1Name: 'Rivka Example', contact1Phone: '050-000-0101', activities: [] }]
+  });
+  await page.click('#tabGuys');
+  await page.getByText('Moshe Example').first().click();
+  const row = page.locator('.contactCardRow').filter({ hasText: 'Contact 1' }).locator('.actions button');
+  await expect(row).toHaveText(['Call', 'WhatsApp', 'SMS']);
+});
+
 test('Shadchanim-tab WhatsApp with no profile selected shares the contact card', async ({ page }) => {
   await seed(page, { shadchanim: [{ id: 1, name: 'Rivka Example', phone: '050-000-0101', email: 'rivka@example.com', tags: 'Chabad', activities: [] }] });
   await page.click('#shadchanList .listCheck');

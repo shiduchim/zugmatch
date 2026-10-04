@@ -60,6 +60,14 @@ test('zugmatch reference screenshots', async ({ browser }) => {
 
   await page.click('#backupTop'); await page.waitForTimeout(500);
   await page.screenshot({ path: `${OUT}/backup-0.png` });
+  await page.click('#backupClose'); await page.waitForTimeout(500);
+
+  await page.click('#tabGuys'); await page.waitForTimeout(400);
+  await page.click('#guysList .listCheck'); await page.waitForTimeout(200);
+  await page.click('#tabGirls'); await page.waitForTimeout(400);
+  await page.click('#girlsList .listCheck'); await page.waitForTimeout(200);
+  await page.click('#makeMatchTop'); await page.waitForTimeout(800);
+  await scrollShots('match', 3);
 
   await ctx.close();
 });
