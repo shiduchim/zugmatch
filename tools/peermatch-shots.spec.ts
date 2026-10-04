@@ -71,5 +71,12 @@ test('peermatch reference screenshots', async ({ browser }) => {
   await scrollShots('shadchan', 2);
   await tapEdit(); await page.waitForTimeout(1200);
   await scrollShots('shadchan-edit', 2);
+  await page.evaluate(() => (window as unknown as { close: () => void }).close());
+
+  /* 4. Backup sheet. */
+  await page.evaluate(() => { [...document.querySelectorAll('button')].find((b) => b.textContent?.trim() === 'Backup')?.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: `${OUT}/backup-0.png` });
+
   await ctx.close();
 });

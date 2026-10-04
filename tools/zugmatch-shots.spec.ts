@@ -55,5 +55,11 @@ test('zugmatch reference screenshots', async ({ browser }) => {
   await scrollShots('shadchan', 2);
   await page.click('#detailEdit'); await page.waitForTimeout(800);
   await scrollShots('shadchan-edit', 2);
+  await page.click('#formCancel'); await page.waitForTimeout(500);
+  await page.click('#detailBack'); await page.waitForTimeout(500);
+
+  await page.click('#backupTop'); await page.waitForTimeout(500);
+  await page.screenshot({ path: `${OUT}/backup-0.png` });
+
   await ctx.close();
 });
