@@ -1,0 +1,15 @@
+{
+  "name": "zugmatch",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PeerMatch, cleaned up.",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "privacy-check": "node scripts/privacy-check.mjs",
+    "serve": "python3 -m http.server 8080"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}

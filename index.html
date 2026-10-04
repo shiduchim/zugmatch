@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#315b78">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+<title>PeerMatch</title>
+</head>
+<body>
+<div class="app">
+  <header>
+    <button type="button" class="backupLink" id="backupTop">Backup</button>
+    <div class="brand">PeerMatch</div>
+    <div class="sub">Private shidduch contact &amp; profile tracker<span class="versionPill" id="versionPill">v1</span></div>
+    <div class="bhe">ב"ה</div>
+    <button type="button" class="makeMatchBtn" id="makeMatchTop">Make match</button>
+  </header>
+  <a href="#" class="featureRequestLink" id="featureRequestLink">Request an app feature</a>
+  <main>
+    <div id="banner" class="banner hidden">A shared profile is ready to import.</div>
+
+    <section id="shadchanimSection">
+      <h1>Shadchanim</h1>
+      <div class="toolbar">
+        <input id="shadchanSearch" placeholder="Search shadchanim">
+        <button type="button" class="primary" id="addShadchan">Add</button>
+        <button type="button" class="secondary" id="importWa">Import</button>
+        <input type="file" id="importWaFile" accept=".zip,application/zip,application/x-zip-compressed" class="hidden">
+      </div>
+      <div id="shadchanList"></div>
+    </section>
+
+    <section id="guysSection" class="hidden">
+      <h1>Guys</h1>
+      <div class="toolbar">
+        <input id="guysSearch" placeholder="Search guys">
+        <button type="button" class="primary" id="addGuy">Add</button>
+      </div>
+      <div id="guysList"></div>
+    </section>
+
+    <section id="girlsSection" class="hidden">
+      <h1>Girls</h1>
+      <div class="toolbar">
+        <input id="girlsSearch" placeholder="Search girls">
+        <button type="button" class="primary" id="addGirl">Add</button>
+      </div>
+      <div id="girlsList"></div>
+    </section>
+  </main>
+  <nav>
+    <button type="button" id="tabShadchanim" class="active">Shadchanim</button>
+    <button type="button" id="tabGuys">Guys</button>
+    <button type="button" id="tabGirls">Girls</button>
+  </nav>
+</div>
+<div id="modal" class="modal hidden"><div id="sheet" class="sheet"></div></div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
