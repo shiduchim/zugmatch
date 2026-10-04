@@ -107,7 +107,7 @@ export function openComposeSheet(record, { name, phone, email }, channel) {
 /* ---------- Main Contact row markup (Guy/Girl and Shadchan detail) ---------- */
 
 export function contactRowHtml({ label, showWaiting, waiting }) {
-  return `<div class="pmContactLabel">${esc(label)}</div><div class="contactRow">
+  return `${label ? `<div class="pmContactLabel">${esc(label)}</div>` : ''}<div class="contactRow">
     <button type="button" class="lightblue" data-act="call">Call</button>
     <button type="button" class="lightblue" data-act="email">Email</button>
     <button type="button" class="lightblue" data-act="wa">WhatsApp</button>

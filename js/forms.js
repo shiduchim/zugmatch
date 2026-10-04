@@ -53,7 +53,7 @@ function mountPhotoTile(container, existing) {
       state2.preview = URL.createObjectURL(state2.thumb);
       tile.innerHTML = `<img src="${state2.preview}" alt="Photo"><button type="button" class="removeMedia">Remove</button>`;
       tile.querySelector('.removeMedia').onclick = (e) => { e.stopPropagation(); state2.full = null; state2.thumb = null; draw(); };
-    } else tile.textContent = 'Photo / screenshot';
+    } else tile.textContent = 'Photo';
   }
   tile.onclick = (e) => { if (!e.target.closest('.removeMedia')) input.click(); };
   input.onchange = async () => {
@@ -62,7 +62,7 @@ function mountPhotoTile(container, existing) {
     if (!f) return;
     tile.textContent = 'Loading…';
     try { const m = await processImage(f); state2.full = m.full; state2.thumb = m.thumb; draw(); }
-    catch { tile.textContent = 'Photo / screenshot'; alert('Could not use that image. Try another photo or screenshot.'); }
+    catch { tile.textContent = 'Photo'; alert('Could not use that image. Try another photo or screenshot.'); }
   };
   draw();
   return state2;
@@ -165,18 +165,17 @@ function renderForm(kind, existing, shared) {
 
   setReopen(() => (isEdit ? openEditGuyGirl(kind, existing.id) : openAddForm(kind, shared)));
 
-  openSheet(`<h2>${isEdit ? 'Edit' : 'Add'} ${esc(label)}</h2>
-    <div id="formTools" class="row" style="align-items:flex-start"></div>
+  openSheet(`<div class="formHead"><h2>${isEdit ? 'Edit' : 'Add'} ${esc(label)}</h2><div id="formTools" class="formTools"></div></div>
     <div class="pmGrid" style="display:grid;grid-template-columns:1fr 105px;gap:9px">
       <label>Name<input id="fName" value="${esc(existing?.name || '')}" placeholder="Name (optional)"></label>
       <label>Age<input id="fAge" type="number" min="18" max="99" value="${esc(existing?.age || '')}"></label>
     </div>
-    <div class="row" style="justify-content:flex-end;margin:-2px 0 5px"><button type="button" class="lightblue" id="pasteProfile">Paste profile</button></div>
-    <label>Profile<textarea id="fText" placeholder="Paste, type, or record the profile">${esc(text)}</textarea></label>
+    <label>Profile<div class="pasteProfileRow"><button type="button" class="pasteProfileBtn" id="pasteProfile">Paste profile</button></div><textarea id="fText" placeholder="Paste, type, or record the profile">${esc(text)}</textarea></label>
     <div id="lookingForBlock" class="pmGrid" style="display:grid;grid-template-columns:1fr 105px;gap:9px">
       <label>Looking for<textarea id="fLookingFor" style="min-height:72px">${esc(existing?.lookingFor || '')}</textarea></label>
       <label>To what age<input id="fLookingAge" type="number" min="18" max="99" value="${esc(existing?.lookingForMaxAge || '')}"></label>
     </div>
+    <label>Religious details<input id="fReligiousDetails" value="${esc(existing?.religiousDetails || '')}" placeholder="e.g. Chabad, Breslev, Yeshivish, tzniut"></label>
     <div class="card"><div class="sectionTitle" style="margin-top:0">Contacts</div>
       <label>Profile phone<input id="fProfilePhone" type="tel" value="${esc(existing?.profilePhone || '')}"></label>
       <div class="pmGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
@@ -191,11 +190,10 @@ function renderForm(kind, existing, shared) {
     <div id="attachHolder"></div>
     <label>Tags<input id="fTags" value="${esc(existing?.tags || '')}" placeholder="e.g. Chabad, Israel, 35+"></label>
     <label>Religious level<input id="fReligiousLevel" value="${esc(existing?.religiousLevel || '')}"></label>
-    <label>Religious details<input id="fReligiousDetails" value="${esc(existing?.religiousDetails || '')}"></label>
-    <div class="row" style="margin-top:14px"><button type="button" class="primary full" id="formSave">Save ${esc(label)}</button></div><div class="gap"></div>
-    <button type="button" class="secondary full" id="formCancel">Cancel</button>`);
+    <div class="formFixed"><button type="button" class="primary" id="formSave">${isEdit ? 'Save Changes' : 'Save ' + esc(label)}</button><button type="button" class="secondary" id="formCancel">Cancel</button></div>`);
 
   const sheet = document.getElementById('sheet');
+  sheet.classList.add('hasFixedBar');
   const tools = document.getElementById('formTools');
   const photo = mountPhotoTile(tools, { full: existing ? (existing.profileMediaFull || existing.profileImage) : (shared?.photo || null), thumb: existing ? existing.profileMediaThumb : (shared?.photo || null) });
   const audio = mountAudioProfile(tools, document.getElementById('fText'), existing ? { audio: existing.profileAudio, text: existing.profileAudioText } : null);
@@ -305,27 +303,24 @@ function renderShadchanForm(existing) {
   setReopen(() => (isEdit ? openEditShadchan(existing.id) : openAddShadchan()));
 
   openSheet(`<h2>${isEdit ? 'Edit' : 'Add'} Shadchan</h2>
-    <div id="formTools" class="row" style="align-items:flex-start"></div>
     <label>Name<input id="sName" value="${esc(existing?.name || '')}"></label>
-    <label>Phone<input id="sPhone" type="tel" value="${esc(existing?.phone || '')}"></label>
+    <label>Phone / SMS<input id="sPhone" type="tel" value="${esc(existing?.phone || '')}"></label>
     <label>Email<input id="sEmail" type="email" value="${esc(existing?.email || '')}"></label>
+    <label>Profile / notes<textarea id="sProfileText" placeholder="Paste shadchan information here, or attach a PDF/screenshot below">${esc(existing?.profileText || '')}</textarea></label>
+    <div id="attachHolder"></div>
     <label>Tags<input id="sTags" value="${esc(existing?.tags || '')}" placeholder="Chabad, 35+, Israel"></label>
+    <label>Religious level<input id="sReligiousLevel" value="${esc(existing?.religiousLevel || '')}"></label>
+    <label>Religious details<input id="sReligiousDetails" value="${esc(existing?.religiousDetails || '')}"></label>
     <label>Referred by<input id="sReferredBy" value="${esc(existing?.referredBy || '')}" placeholder="Type a name or phone number, or choose below"></label>
     <label>Choose an existing Shadchan (optional)<select id="sReferredSelect"><option value="">Choose existing Shadchan…</option>${referredByOptionsHtml(existing?.id)}</select></label>
     <div class="small" id="referredStatus"></div>
-    <label>Religious level<input id="sReligiousLevel" value="${esc(existing?.religiousLevel || '')}"></label>
-    <label>Religious details<input id="sReligiousDetails" value="${esc(existing?.religiousDetails || '')}"></label>
-    <label>Profile / notes<textarea id="sProfileText" style="min-height:130px">${esc(existing?.profileText || '')}</textarea></label>
-    <div id="attachHolder"></div>
-    <div class="row" style="margin-top:14px"><button type="button" class="primary full" id="formSave">Save Shadchan</button></div><div class="gap"></div>
-    <button type="button" class="secondary full" id="formCancel">Cancel</button>`);
+    <div class="formFixed"><button type="button" class="primary" id="formSave">${isEdit ? 'Save' : 'Save Shadchan'}</button><button type="button" class="secondary" id="formCancel">Cancel</button></div>`);
 
-  const tools = document.getElementById('formTools');
+  document.getElementById('sheet').classList.add('hasFixedBar');
   const attach = mountAttachmentBox(document.getElementById('attachHolder'), existing, (parsedText) => {
     const ta = document.getElementById('sProfileText');
     if (!ta.value.trim()) ta.value = parsedText;
   });
-  void tools;
 
   const nameEl = document.getElementById('sName'), phoneEl = document.getElementById('sPhone');
   bindPhoneNormalize(phoneEl);

@@ -106,7 +106,7 @@ export function mountAttachmentBox(container, existing, onParsedText) {
   const box = document.createElement('div');
   box.className = 'card attachBox';
   box.innerHTML = `<div class="sectionTitle" style="margin-top:0">PDF / screenshot</div>
-    <div class="small">Attach a profile PDF or a screenshot. zugmatch tries to read English, Hebrew or Russian locally on this device and fills only empty fields.</div>
+    <div class="small">Attach a profile PDF or a screenshot from your phone. PeerMatch tries to read English, Hebrew or Russian locally on this device and fills only empty fields.</div>
     <div class="actions" style="margin-top:8px;grid-template-columns:1fr 1fr auto"><button type="button" class="secondary" id="attachOnly">Attach only</button><button type="button" class="secondary" id="attachParse">Attach + parse text</button><button type="button" class="secondary" id="attachRemove">Remove</button></div>
     <input type="file" id="attachInput" class="hidden" accept="application/pdf,image/*,.pdf">
     <div class="small attachFileName" id="attachFileName" style="margin-top:7px"></div>

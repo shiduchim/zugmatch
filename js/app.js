@@ -27,6 +27,7 @@ export function setReopen(fn) {
 }
 
 export function openSheet(html) {
+  $('sheet').classList.remove('hasFixedBar');
   $('sheet').innerHTML = html;
   $('modal').classList.remove('hidden');
   if (!sheetOpen) {

@@ -133,28 +133,30 @@ the DOM.
    - `pre-wrap` text
    - WhatsApp `*bold*` rendered bold
    - phone numbers turned into underlined links, which open a picker "Open phone number": Call | WhatsApp | Cancel
-7. **Looking for / To what age** box, when present.
-8. **Profile attachment** box, when present: file name plus **Open PDF** / **Open attachment**.
+7. **Profile attachment** box, when present: file name plus **Open PDF** / **Open attachment**.
    - Images open in the viewer, with [Share / save][Close].
    - PDFs download directly.
-9. **Quick details (1):** "Talked by phone" and "Talked in person" checkboxes.
+8. **Quick details (1):** "Talked by phone" and "Talked in person" checkboxes.
    - Each one reveals a "Conversation info" textarea. It autosaves.
-10. **Contacts** card, with 3 rows. Each row shows "Kind: name", then the phone, then
+9. **Contacts** card, with 3 rows. Each row shows "Kind: name", then the phone, then
     [Call][SMS][WhatsApp], or "No phone number" in italics.
     - Profile (the person's own `profilePhone`; the row label is hidden)
     - Contact 1
     - Contact 2
-11. **Quick details (2)** box:
+10. **Quick details (2)** box:
     - flag checkboxes: Divorced, With kids, Kosher for Kohen, Kohen, Baal teshuvah,
       Watches movies, Prays 3x daily, Smokes
     - **Speaks languages:** English / Hebrew / Russian
     - **Body type:** Regular / Overweight (a single choice)
     - text rows: **Tags**, **Religious level**, **Religious details**
     - Autosaves 250ms after typing stops.
-12. **Linked Shadchan** box.
+11. **Linked Shadchan** box.
     - Dropdown button: "Add linked Shadchan… ▾", or the linked name.
     - Its menu has "No linked Shadchan", then all shadchanim A–Z as "name • phone".
     - Plus an **Open** button.
+12. **Looking for / To what age** box, when present. (Renders here, after Linked Shadchan —
+    confirmed against the real v131 app; an earlier draft of this doc had it right after the
+    profile text, which does not match.)
 13. **History:**
     - A blue band titled "History".
     - Entries are light cards, newest first. Each shows:
@@ -189,18 +191,22 @@ Continue). Continue logs the outgoing message and then opens the app.
 ## 5. Forms
 
 **Add / Edit Guy or Girl:**
-- **Header tools:**
-  - Photo tile ("Photo / screenshot", tap to pick, Remove)
-  - **PDF / screenshot** button
-  - **Audio profile** record button
+- **Header tools** (top-right, same row as the "Add/Edit Guy/Girl" title):
+  - Photo tile (66px square, text "Photo", tap to pick, Remove). A "PDF / screenshot" header
+    button also exists in the DOM but is hidden (`display:none`) in the real v131 app — dead
+    code, not rebuilt.
+  - **Audio profile** record button (72px tile).
 - **Fields:**
   - **Name** (optional) and **Age**, side by side.
-  - **Paste profile** small button → **Profile** textarea.
+  - **Profile** label, with a small **Paste profile** pill button inline on its row, then the
+    textarea.
     - On paste or typing, **empty** fields are autofilled from the text: name (from a
       `Name: / שם: / Имя:` line, or the first line), age (EN/HE/RU patterns) and contact
       name/phone/email (from the bottom of the text).
     - A phone that matches a shadchan fills in that contact's name.
   - **Looking for** textarea | **To what age** (18–99).
+  - **Religious details** (standalone field, right after Looking for — confirmed against the
+    real v131 app; it is NOT grouped with Tags/Religious level below).
   - **Contacts** block:
     - Profile phone
     - Contact 1 name | phone
@@ -210,24 +216,29 @@ Continue). Continue logs the outgoing message and then opens the app.
     - Parsing is optional (PDF.js text, then Tesseract OCR for eng/heb/rus). It may be blocked
       under NetSpark.
     - A failure never blocks attaching.
-  - Tags · Religious level · Religious details.
+  - Tags · Religious level.
 - **Save rule:** needs text **or** audio **or** image **or** attachment. The name defaults to
   the first line.
-- **Buttons:** fixed bar [Save Guy/Girl] [Cancel].
+- **Buttons:** a floating fixed pill bar (like the history composer) — **[Save Guy/Girl]
+  [Cancel]** when adding, **[Save Changes] [Cancel]** when editing.
 
 **Add / Edit Shadchan:**
-- Fields:
+- Fields, in order:
   - Name (required)
-  - Phone
+  - Phone / SMS
   - Email
+  - Profile / notes (placeholder "Paste shadchan information here, or attach a PDF/screenshot
+    below")
+  - PDF / screenshot attachment
   - Tags
+  - Religious level
+  - Religious details
   - **Referred by**: free text ("Type a name or phone number, or choose below") plus a select
     "Choose an existing Shadchan (optional)"
     - Status line under it: "Linked to X" or "New/manual referrer".
-  - Religious level
-  - Religious details
-  - Profile / notes
-  - PDF / screenshot attachment
+- **Buttons:** the same floating fixed pill bar — **[Save Shadchan] [Cancel]** when adding,
+  **[Save] [Cancel]** when editing (confirmed against the real v131 app; it is NOT "Save
+  Changes" here, unlike the Guy/Girl edit form).
 - **Phone inputs** (all forms):
   - Israeli numbers are normalized to the local `05X-XXX-XXXX` form on blur or paste.
   - Hints: "Matches Shadchan: X", "Israeli landline — SMS unavailable", "Israeli nationwide /

@@ -328,6 +328,7 @@ export function wireHistoryDeletes(container, state, kind, id, onChanged) {
 /* ---------- The fixed Note/mic composer ---------- */
 
 export function mountComposer(container, record, onSaved) {
+  container.closest('.sheet')?.classList.add('hasFixedBar');
   const bar = document.createElement('div');
   bar.className = 'composer';
   bar.innerHTML = `<input type="text" class="composerInput" placeholder="Note…" autocomplete="off"><button type="button" class="composerBtn" aria-label="Add note"></button>`;

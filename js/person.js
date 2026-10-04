@@ -2,7 +2,7 @@
    moving one line in the arrays at the bottom of openGuyGirl/openShadchan). */
 
 import { state, save } from './db.js';
-import { esc, stamp, objectUrl, normalizePhone, phoneType, isLandline, dueLabel, todayKey, renderBoldHtml } from './util.js';
+import { esc, stamp, objectUrl, normalizePhone, phoneType, isLandline, dueLabel, todayKey, renderBoldHtml, phoneKey } from './util.js';
 import { renderHistory, wireHistoryDeletes, mountComposer, callBannerHtml, setActiveCallContext, addActivity } from './history.js';
 import { openSheet, closeSheet, setReopen, getSelected } from './app.js';
 import { contactRowHtml, wireContactRow, contactsCardHtml, wireContactsCard, openPhonePicker } from './send.js';
@@ -137,11 +137,23 @@ function wireBodyType(container, record, onChanged) {
 
 /* ---------- Linked Shadchan (Guy/Girl) ---------- */
 
+function normName(s) {
+  return String(s || '').trim().toLocaleLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+function legacyLinkedShad(x) {
+  for (const id of [x.sourceShadchanId, x.importedFromShadchanId, x.sourceShadchanId2]) {
+    if (id != null) { const s = state.shadchanim.find((z) => String(z.id) === String(id)); if (s) return s; }
+  }
+  const phones = [x.sourcePhone, x.sourcePhone2].map(phoneKey).filter(Boolean);
+  for (const p of phones) { const s = state.shadchanim.find((z) => phoneKey(z.phone) === p); if (s) return s; }
+  const names = [x.sourceName, x.source, x.importedFromShadchan].map(normName).filter(Boolean);
+  for (const n of names) { const s = state.shadchanim.find((z) => normName(z.name) === n); if (s) return s; }
+  return null;
+}
 function resolveLinkedShad(x) {
   if (x.linkedShadchanManual === true) return x.linkedShadchanId == null ? null : state.shadchanim.find((s) => String(s.id) === String(x.linkedShadchanId)) || null;
-  const id = x.linkedShadchanId ?? x.sourceShadchanId ?? x.importedFromShadchanId;
-  if (id != null) { const s = state.shadchanim.find((z) => String(z.id) === String(id)); if (s) return s; }
-  return null;
+  if (x.linkedShadchanId != null) { const s = state.shadchanim.find((z) => String(z.id) === String(x.linkedShadchanId)); if (s) return s; }
+  return legacyLinkedShad(x);
 }
 function linkedShadchanHtml(x) {
   const current = resolveLinkedShad(x);
@@ -192,10 +204,9 @@ export function openGuyGirl(kind, id) {
   const sections = [];
   sections.push(callBannerHtml(x));
   sections.push(metaPillsHtml(x));
-  sections.push(contactRowHtml({ label: 'Contact person', showWaiting: true, waiting: x.waitingForReply }));
+  sections.push(contactRowHtml({ label: '', showWaiting: true, waiting: x.waitingForReply }));
   if (x.text?.trim()) sections.push(`<div id="translateHolder"></div>`);
   if (x.text?.trim()) sections.push(`<div class="card"><div class="profileText">${linkedPhoneHtml(x.text)}</div></div>`);
-  sections.push(lookingForHtml(x));
   sections.push(renderAttachmentDetail(x));
   sections.push(talkedHtml(x));
   const contactRows = [
@@ -206,6 +217,7 @@ export function openGuyGirl(kind, id) {
   sections.push(contactsCardHtml(contactRows));
   sections.push(quickDetails2Html(x, true));
   sections.push(linkedShadchanHtml(x));
+  sections.push(lookingForHtml(x));
   sections.push(`<div class="sectionTitle bandTitle">History</div>${renderHistory(x)}`);
   sections.push(x.createdAt ? `<div class="addedDate">Added to PeerMatch: ${esc(new Date(x.createdAt).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }))}</div>` : '');
 
@@ -287,7 +299,7 @@ export function openShadchan(id) {
 
   const attachmentTile = x.profileAttachment
     ? `<div class="mediaTile attachTile" id="shadAttachTile">PDF / screenshot</div>`
-    : `<div class="mediaTile attachTile" id="shadAttachTile" style="opacity:.55">No attachment</div>`;
+    : '';
 
   const sections = [];
   sections.push(callBannerHtml(x));
@@ -295,16 +307,12 @@ export function openShadchan(id) {
   sections.push(callReminderHtml(x));
   sections.push(linkedProfilesHtml(id));
   sections.push(referredByHtml(x));
+  sections.push(quickDetails2Html(x, false));
+  sections.push(talkedHtml(x));
   const hasNotes = x.profileText?.trim();
-  sections.push(`<div class="card">${hasNotes ? `<div class="small">Shadchan profile / notes</div><div class="shadNotesText profileText">${linkedPhoneHtml(x.profileText)}</div><hr>` : ''}
-    <label class="inlineCheck"><input type="checkbox" data-field="talkedPhone" ${x.talkedPhone ? 'checked' : ''}> Talked by phone</label>
-    <label class="inlineCheck"><input type="checkbox" data-field="talkedInPerson" ${x.talkedInPerson ? 'checked' : ''}> Talked in person</label>
-    <textarea class="talkNote${x.talkedPhone || x.phoneConversationNote ? ' show' : ''}" data-field="phoneConversationNote" placeholder="Phone conversation: length, importance, what it was like…">${esc(x.phoneConversationNote || '')}</textarea>
-    <textarea class="talkNote${x.talkedInPerson || x.inPersonConversationNote ? ' show' : ''}" data-field="inPersonConversationNote" placeholder="In-person conversation: length, importance, what it was like…">${esc(x.inPersonConversationNote || '')}</textarea>
-    </div>`);
+  sections.push(hasNotes ? `<div class="card"><div class="small">Shadchan profile / notes</div><div class="shadNotesText profileText">${linkedPhoneHtml(x.profileText)}</div></div>` : '');
   sections.push(renderAttachmentDetail(x));
   sections.push(`<div class="sectionTitle bandTitle">History</div>${renderHistory(x)}`);
-  sections.push(quickDetails2Html(x, false));
   sections.push(x.createdAt ? `<div class="addedDate">Added to PeerMatch: ${esc(new Date(x.createdAt).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }))}</div>` : '');
 
   openSheet(`<div class="detailHead">
@@ -317,7 +325,7 @@ export function openShadchan(id) {
   const sheet = document.getElementById('sheet');
   document.getElementById('detailBack').onclick = () => closeSheet();
   document.getElementById('detailEdit').onclick = () => openEditShadchan(id);
-  document.getElementById('shadAttachTile').onclick = () => { document.getElementById('openAttachment')?.click(); };
+  document.getElementById('shadAttachTile')?.addEventListener('click', () => { document.getElementById('openAttachment')?.click(); });
 
   const rerender = () => openShadchan(id);
   wireContactRow(sheet, x, { name: x.name, phone: x.phone, email: x.email }, async () => {
