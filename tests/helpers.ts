@@ -63,16 +63,25 @@ export async function readState(page: Page) {
   });
 }
 
-/** Blocks WhatsApp/tel/sms/mailto navigation so a test can inspect the resulting URL
-    without the page actually navigating away. */
+/** Captures WhatsApp/tel/sms/mailto navigation attempts so a test can inspect the resulting
+    URL without the page actually navigating away. `tel:`/`sms:`/`mailto:`/`whatsapp://` are
+    custom schemes Chromium never turns into a network request (so Playwright's page.route()
+    never sees them) and never actually navigates the page to (so there is nothing to block) —
+    they only ever show up as a CDP Page.frameRequestedNavigation event, which is what this
+    reads. `https://wa.me/...` is a real HTTP request: it IS visible to page.route(), and
+    without blocking it there, the page would actually navigate away, so that one case is
+    still blocked (not captured) via route(). */
 export async function captureOutboundNav(page: Page) {
   const urls: string[] = [];
+  const matches = (url: string) => /^(whatsapp:|https:\/\/wa\.me|tel:|sms:|mailto:)/.test(url);
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send('Page.enable');
+  cdp.on('Page.frameRequestedNavigation', (e: { url: string }) => {
+    if (matches(e.url)) urls.push(e.url);
+  });
   await page.route('**/*', (route) => {
     const url = route.request().url();
-    if (/^(whatsapp:|https:\/\/wa\.me|tel:|sms:|mailto:)/.test(url)) {
-      urls.push(url);
-      return route.fulfill({ status: 200, contentType: 'text/html', body: '<html></html>' });
-    }
+    if (matches(url)) return route.fulfill({ status: 200, contentType: 'text/html', body: '<html></html>' });
     route.continue();
   });
   return urls;

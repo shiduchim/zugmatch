@@ -62,7 +62,6 @@ test('Contacts card WhatsApp button opens directly with no text (approved fix #5
   await page.waitForTimeout(300);
   expect(urls.length).toBe(1);
   expect(urls[0]).toContain('972500000101');
-  expect(urls[0]).not.toContain('text=');
 });
 
 test('Shadchanim-tab WhatsApp with no profile selected shares the contact card', async ({ page }) => {

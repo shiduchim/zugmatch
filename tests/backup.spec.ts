@@ -31,8 +31,8 @@ test('zugmatch ZIP round trip: back up, restore, and the data comes back unchang
   await page.click('#backupTop');
   await page.setInputFiles('#restoreFile', zipPath!);
   await page.waitForTimeout(500);
-  await expect(page.locator('.pickerSheet')).toContainText('1 shadchanim');
-  await expect(page.locator('.pickerSheet')).toContainText('1 guys');
+  await expect(page.locator('#sheet')).toContainText('1 shadchanim');
+  await expect(page.locator('#sheet')).toContainText('1 guys');
   await page.click('#restoreConfirm');
   await page.waitForTimeout(800); // page reloads itself after restore
 
@@ -54,7 +54,7 @@ test('restores a ZIP backup made by real PeerMatch code', async ({ page }) => {
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }, Array.from(zipBytes));
   await page.waitForTimeout(500);
-  await expect(page.locator('.pickerSheet')).toContainText('1 shadchanim');
+  await expect(page.locator('#sheet')).toContainText('1 shadchanim');
   await page.click('#restoreConfirm');
   await page.waitForTimeout(800);
 
@@ -90,7 +90,7 @@ test('restores the same PeerMatch backup wrapped as the emailed TXT format', asy
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }, txt);
   await page.waitForTimeout(500);
-  await expect(page.locator('.pickerSheet')).toContainText('1 shadchanim');
+  await expect(page.locator('#sheet')).toContainText('1 shadchanim');
   await page.click('#restoreConfirm');
   await page.waitForTimeout(800);
 
