@@ -239,7 +239,7 @@ async function showScan(scan) {
       <label class="waImportCheck"><input id="waHistory" type="checkbox" ${scan.messages.length ? 'checked' : ''}>Import this conversation into History (${scan.messages.length} messages)</label>
     </div>
     <div class="card"><div class="sectionTitle" style="margin-top:0">Shadchanim found — ${scan.contacts.length}</div>${contactsHtml}</div>
-    <div class="card"><div class="sectionTitle" style="margin-top:0">Possible profiles — ${scan.profiles.length}</div><div class="small">Looks for Name / שם / Имя and Age / גיל / Возраст, and contact details near the bottom. Review before saving.</div>${profilesHtml}</div>
+    <div class="card"><div class="sectionTitle" style="margin-top:0">Possible profiles — ${scan.profiles.length}</div><div class="small">PeerMatch looks for Name / שם / Имя and Age / גיל / Возраст. It also checks the bottom of profile text for contact details. Review before saving.</div>${profilesHtml}</div>
     <div id="waImportStatus" class="small"></div>
     <div class="row" style="position:sticky;bottom:0;background:rgba(246,245,242,.97);padding:10px 0"><button type="button" class="primary" id="waImportNow" style="flex:1.4">Import selected</button><button type="button" class="secondary" id="waImportCancel" style="flex:.8">Cancel</button></div>`);
 

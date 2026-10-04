@@ -489,7 +489,7 @@ function showFollowup(rec) {
     <textarea id="cfNote" placeholder="What happened on the call? (optional)"></textarea>
     <button type="button" class="secondary full" id="cfAudio">Record audio note</button>
     <div style="font-weight:850;font-size:12px;margin-top:12px">Was the call answered?</div>
-    <div class="small" style="margin:2px 0 6px">${durationSec ? `PeerMatch's best guess from being away ~${esc(formatDuration(durationSec))} — tap to correct.` : 'Cannot be detected — tap to set it.'}</div>
+    <div class="small" style="margin:2px 0 6px">${durationSec ? `PeerMatch's best guess from being away ~${esc(formatDuration(durationSec))} — tap to correct.` : 'PeerMatch cannot detect this — tap to set it.'}</div>
     <div class="actions" id="cfAnswered"><button type="button" id="cfYes">Yes</button><button type="button" id="cfNo">No</button></div>
     <div class="small" id="cfStatus" style="min-height:14px;margin-top:6px"></div>
     <div class="row" style="margin-top:10px"><button type="button" class="primary full" id="cfSave">Save status update</button></div><div class="gap"></div>
