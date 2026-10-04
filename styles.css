@@ -255,8 +255,11 @@ audio { width: 100%; margin-top: 6px; }
 
 .composer { position: fixed; left: 50%; bottom: max(9px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(590px, calc(100% - 20px)); z-index: 95; display: flex; gap: 8px; align-items: center; padding: 8px; background: rgba(255, 255, 255, .97); border: 1px solid var(--line); border-radius: 999px; box-shadow: 0 4px 18px rgba(0, 0, 0, .16); backdrop-filter: blur(10px); }
 .composerInput { flex: 1; border: 0; background: transparent; padding: 6px 10px; border-radius: 999px; }
-.composerBtn { width: 44px; height: 44px; border-radius: 50%; background: var(--text); color: #fff; font-size: 16px; padding: 0; flex: 0 0 auto; }
+.composerBtn { width: 44px; height: 44px; border-radius: 50%; background: var(--text); color: #fff; padding: 0; flex: 0 0 auto; display: grid; place-items: center; }
+.composerBtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.composerBtn.sendMode svg:first-child { transform: translateX(1px); }
 .composerBtn.recording { background: #c0392b; animation: pulse 1s infinite; }
+.composerBtn.recording svg rect { fill: currentColor; stroke: none; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
 
 /* ---------- Full-screen image / attachment viewer ---------- */

@@ -327,11 +327,15 @@ export function wireHistoryDeletes(container, state, kind, id, onChanged) {
 
 /* ---------- The fixed Note/mic composer ---------- */
 
+const MIC_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14.5a3.5 3.5 0 0 0 3.5-3.5V5a3.5 3.5 0 0 0-7 0v6a3.5 3.5 0 0 0 3.5 3.5Z"/><path d="M5.75 10.75a6.25 6.25 0 0 0 12.5 0M12 17v3.25M9.25 20.25h5.5"/></svg>';
+const SEND_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 4 16 8-16 8 3-8-3-8Z"/><path d="M7 12h13"/></svg>';
+const STOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>';
+
 export function mountComposer(container, record, onSaved) {
   container.closest('.sheet')?.classList.add('hasFixedBar');
   const bar = document.createElement('div');
   bar.className = 'composer';
-  bar.innerHTML = `<input type="text" class="composerInput" placeholder="Note…" autocomplete="off"><button type="button" class="composerBtn" aria-label="Add note"></button>`;
+  bar.innerHTML = `<input type="text" class="composerInput" placeholder="Note…" autocomplete="off"><button type="button" class="composerBtn" aria-label="Record audio note"></button>`;
   container.appendChild(bar);
   const input = bar.querySelector('.composerInput');
   const btn = bar.querySelector('.composerBtn');
@@ -339,7 +343,10 @@ export function mountComposer(container, record, onSaved) {
 
   function paint() {
     btn.classList.toggle('recording', !!recorder);
-    btn.textContent = recorder ? '■' : (input.value.trim() ? '➤' : '●');
+    const hasText = !!input.value.trim();
+    btn.classList.toggle('sendMode', hasText && !recorder);
+    btn.innerHTML = recorder ? STOP_ICON : (hasText ? SEND_ICON : MIC_ICON);
+    btn.setAttribute('aria-label', recorder ? 'Stop recording' : (hasText ? 'Send note' : 'Record audio note'));
   }
   input.addEventListener('input', paint);
 
